@@ -3,10 +3,10 @@
 tic
 %2D animated graph
 
-% graph_video = VideoWriter('graph_video_4.avi');
-% open(graph_video);
+graph_video = VideoWriter('graph_video_1.avi');
+open(graph_video);
 
-heatmap_video = VideoWriter('heatmap_video_5.avi');
+heatmap_video = VideoWriter('heatmap_video_1.avi');
 open(heatmap_video);
 
 %Set 2D Grid
@@ -23,6 +23,7 @@ courant_num = 0.7;
 
 %Pre-set array to speed up execution
 u = zeros(num_spaces, 1);
+unew = zeros(num_spaces, 1);
 
 % Set initial conditions, which will propogate in time.
 % Can be changed and set as desired.
@@ -69,17 +70,24 @@ to_average = 3;
 
 for time = 1 : time_increments
    
-    % Update the heatmap_video with the latest changes
-    update_video_heatmap(heatmap_video, u, max_temperature);
-    
-    % Update the graph_video with the latest changes
-%     update_video_graph(graph_video, u, x, max_temperature);
+    unew(1) = u(1);
 
     % Evolve the graph continually as the shock propagates
-    u = first_order_upwind(u, courant_num);
+    unew = first_order_upwind(u, courant_num);
 
     % Account for some dissipation of the heat wave as it travels
-    u = smooth_elements(u, to_average);
+    unew = smooth_elements(unew, to_average);
+    
+    % Update the heatmap_video with the latest changes
+    update_video_heatmap(heatmap_video, unew, max_temperature);
+    
+    % Update the graph_video with the latest changes
+    update_video_graph(graph_video, unew, x, max_temperature);
+    
+    % Swap pointers
+    % Doing it like this rather than having just one array reduces
+    % dispersion error
+    [u,unew]=deal(unew,u);
      
 end
 
@@ -87,7 +95,7 @@ end
 close(heatmap_video);
 
 % Close the graph video file
-% close(graph_video);
+close(graph_video);
 
 % Reports how long execution took
 toc
