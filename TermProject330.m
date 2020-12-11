@@ -21,8 +21,10 @@ unew = zeros(Nx,1);
 init_cond=0;
 if init_cond == 0 
     for i=1:Nx    %%potentially one too few
-            if x(i) <0.3 & x(i) > 0.25
-                u(i) = 1;
+            if x(i) <0.3 & x(i) > 0.1
+                u(i) = sin(x(i));
+            elseif x(i)>0.3 & x(i)<0.5
+                u(i) = -sin(x(i));
             else
                 u(i) = 0;
             end
@@ -72,15 +74,16 @@ hold off
 
 %% Obeserve how different grid sizes/step sizes behave
 %(spoiler alert it gets worse with less steps)
-Nx=10; Nt=10;
-
-for i=1:4
-Nx=Nx*10;
-Nt=Nt*10;
-if i==4
-    Nx=500;
-    Nt=Nx;
-end
+Nx=200; Nt=200;
+vidfile = VideoWriter('testmovie.mp4','MPEG-4');
+open(vidfile);
+%for i=1:4
+%Nx=Nx*10;
+%Nt=Nt*10;
+%if i==4
+%    Nx=500;
+%    Nt=Nx;
+%end
 
 %Set 2D Grid
 xMin=0; xMax=1;
@@ -94,10 +97,10 @@ unew = zeros(Nx,1);
 init_cond=0;
 if init_cond == 0 
     for i=1:Nx    
-            if x(i) <0.3 & x(i) > 0.1
-                u(i) = 2*x(i)+2;
-            elseif x(i) >0 & x(i)<0.05
-                u(i) = 0;
+            if x(i) <0.1 & x(i) > 0.01
+                u(i) = sin(x(i))
+            elseif x(i) >.1 & x(i)<0.3
+                u(i) = -sin(x(i));
             else
                 u(i) = 0;
             end
@@ -114,17 +117,19 @@ for k =1:Nt/1.5
         unew(p)=u(p)-C*(u(p)-u(p-1));
     end
     [u,unew]=deal(unew,u);  %Swap pointers
-    %drawnow
+    F(k) = getframe(gcf); 
+    writeVideo(vidfile,F(k));
+    drawnow
     
 end
-plot(x,unew)
-title(['Spatial steps = ',num2str(Nx)])
-%if Nx==500
-%saveas(gcf,['FirstOrderwithNx',num2str(Nx)],'png')
+close(vidfile);
+%plot(x,unew)
+%title(['Spatial steps = ',num2str(Nx)])
+%saveas(gcf,['Slide3withNx',num2str(Nx)],'png')
+%end
+i=i+1;
 %end
 hold off
-i=i+1
-end
 
 %% Term Project
 
