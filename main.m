@@ -99,4 +99,3 @@ close(graph_video);
 
 % Reports how long execution took
 toc
-

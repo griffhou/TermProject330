@@ -74,9 +74,13 @@ hold off
 %(spoiler alert it gets worse with less steps)
 Nx=10; Nt=10;
 
-for i=1:3
+for i=1:4
 Nx=Nx*10;
 Nt=Nt*10;
+if i==4
+    Nx=500;
+    Nt=Nx;
+end
 
 %Set 2D Grid
 xMin=0; xMax=1;
@@ -114,6 +118,10 @@ for k =1:Nt/1.5
     
 end
 plot(x,unew)
+title(['Spatial steps = ',num2str(Nx)])
+%if Nx==500
+%saveas(gcf,['FirstOrderwithNx',num2str(Nx)],'png')
+%end
 hold off
 i=i+1
 end
@@ -136,7 +144,7 @@ init_cond=0;
 if init_cond == 0 
     for i=1:Nx    %%potentially one too few
             if x(i) <0.3 & x(i) > 0.1
-                u(i) = sin(x(i))
+                u(i) = sin(x(i));
             elseif x(i)>0.3 & x(i)<0.5
                 u(i) = -sin(x(i));
             else
@@ -150,24 +158,18 @@ z=[u,u];
 surf(z)
 
 hold on           %Evolve
-for k =1:1.5*Nt
-    %clf
+for k =1:1.3*Nt
+    clf
     %In order to evolve the graph continually
     unew(1)=u(1);
-    
-    %Choose the Scheme used
-    if c==0
         for p =2:Nx;    %First Order Upwind Scheme
         unew(p)=u(p)-C*(u(p)-u(p-1));
         end
     
-    elseif c==1
-        for 
     znew=[unew,unew];
     surf(znew)
     [u,unew]=deal(unew,u);  %Swap pointers
     drawnow
-    
 end
 hold off
 
