@@ -154,9 +154,15 @@ for k =1:1.5*Nt
     %clf
     %In order to evolve the graph continually
     unew(1)=u(1);
-    for p =2:Nx;    %First Order Upwind Scheme
+    
+    %Choose the Scheme used
+    if c==0
+        for p =2:Nx;    %First Order Upwind Scheme
         unew(p)=u(p)-C*(u(p)-u(p-1));
-    end
+        end
+    
+    elseif c==1
+        for 
     znew=[unew,unew];
     surf(znew)
     [u,unew]=deal(unew,u);  %Swap pointers
