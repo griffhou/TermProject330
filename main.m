@@ -3,10 +3,10 @@
 tic
 %2D animated graph
 
-graph_video = VideoWriter('graph_video_1.avi');
+graph_video = VideoWriter('graph_video_2.avi');
 open(graph_video);
 
-heatmap_video = VideoWriter('heatmap_video_1.avi');
+heatmap_video = VideoWriter('heatmap_video_2.avi');
 open(heatmap_video);
 
 %Set 2D Grid
@@ -73,10 +73,10 @@ for time = 1 : time_increments
     unew(1) = u(1);
 
     % Evolve the graph continually as the shock propagates
-    unew = first_order_upwind(u, courant_num);
+    unew = first_order_upwind(unew, u, courant_num);
 
     % Account for some dissipation of the heat wave as it travels
-    unew = smooth_elements(unew, to_average);
+    % unew = smooth_elements(unew, to_average);
     
     % Update the heatmap_video with the latest changes
     update_video_heatmap(heatmap_video, unew, max_temperature);
