@@ -3,7 +3,7 @@
 tic
 %2D animated graph
 
-graph_video = VideoWriter('graph_video_2.avi');
+graph_video = VideoWriter('graph_video_for_griffin.avi');
 open(graph_video);
 
 heatmap_video = VideoWriter('heatmap_video_2.avi');
@@ -13,7 +13,7 @@ open(heatmap_video);
 %Change num_spaces and time_increments to go faster but less accurate or for a longer period of
 %time
 num_spaces = 200; % Determines the "resolution" of the wave and its dispersion
-time_increments = 100; % Determines how long the wave runs for
+time_increments = 200; % Determines how long the wave runs for
 xMin = 0;
 xMax = 1; 
 x = linspace(xMin, xMax, num_spaces); % Used primarily in plotting the graph
@@ -32,7 +32,7 @@ if init_cond == 0
     for i = 1 : num_spaces    %%potentially one too few
             if x(i) < 0.3 && x(i) > 0.1
                 % u(i) = 2*x(i)+2;
-                u(i) = 20;
+                u(i) = 1;
             elseif x(i) >0 && x(i)<0.05
                 u(i) = 0;
             else
@@ -40,7 +40,7 @@ if init_cond == 0
             end
     end
 end
-max_temperature = 20;
+max_temperature = 1;
 to_average = 3;
 
 % Basically u is the array of y values (ie the dependent variable). For each time t
