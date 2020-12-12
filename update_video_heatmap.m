@@ -1,4 +1,4 @@
-function [video] = update_video_heatmap(video, data, max_temp)
+function [video] = update_video_heatmap(video, data, min_temp, max_temp)
 % Take a video file and update it with the most recent frame based on the
 % data
 heatmap(data', 'Colormap', jet);
@@ -7,7 +7,7 @@ heatmap(data', 'Colormap', jet);
     Ax.XDisplayLabels = nan(size(Ax.XDisplayData));
     Ax.YDisplayLabels = nan(size(Ax.YDisplayData));
     grid off
-    caxis([0, max_temp]);
+    caxis([min_temp, max_temp]);
     writeVideo(video, getframe(gcf));
 end
 

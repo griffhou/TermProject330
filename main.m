@@ -1,19 +1,23 @@
 
+% Group members Griffin Houston, Zach Westhoff, and Leif 
+
+
+
 % Used to keep track of time of execution
 tic
 %2D animated graph
 
-graph_video = VideoWriter('graph_video_for_griffin.avi');
-open(graph_video);
+% graph_video = VideoWriter('graph_video_for_griffin_new_algorithm.avi');
+% open(graph_video);
 
-heatmap_video = VideoWriter('heatmap_video_2.avi');
+heatmap_video = VideoWriter('timetest.avi');
 open(heatmap_video);
 
 %Set 2D Grid
 %Change num_spaces and time_increments to go faster but less accurate or for a longer period of
 %time
-num_spaces = 200; % Determines the "resolution" of the wave and its dispersion
-time_increments = 200; % Determines how long the wave runs for
+num_spaces = 20; % Determines the "resolution" of the wave and its dispersion
+time_increments = 100; % Determines how long the wave runs for
 xMin = 0;
 xMax = 1; 
 x = linspace(xMin, xMax, num_spaces); % Used primarily in plotting the graph
@@ -30,17 +34,22 @@ unew = zeros(num_spaces, 1);
 init_cond=0;
 if init_cond == 0 
     for i = 1 : num_spaces    %%potentially one too few
-            if x(i) < 0.3 && x(i) > 0.1
+            if x(i) < 0.15 && x(i) > 0.00
                 % u(i) = 2*x(i)+2;
-                u(i) = 1;
-            elseif x(i) >0 && x(i)<0.05
                 u(i) = 0;
+            elseif x(i) > 0.15 && x(i) < 0.3
+                u(i) = 20;
+            elseif (x(i) > 0.3 && x(i) < 0.45)
+                u(i) = 0;
+%             elseif x(i) >0 && x(i)<0.05
+%                 u(i) = 0;
             else
                 u(i) = 0;
             end
     end
 end
-max_temperature = 1;
+max_temperature = max(u);
+min_temperature = min(u);
 to_average = 3;
 
 % Basically u is the array of y values (ie the dependent variable). For each time t
@@ -68,21 +77,22 @@ to_average = 3;
     % Desired practice doing this in Matlab, as it is generally considered
     % best practice in many programming languages
 
-for time = 1 : time_increments
+for time = 1 : time_increments / 2.5
    
     unew(1) = u(1);
 
     % Evolve the graph continually as the shock propagates
     unew = first_order_upwind(unew, u, courant_num);
+    unew(1) = u(1);
 
     % Account for some dissipation of the heat wave as it travels
-    % unew = smooth_elements(unew, to_average);
+    unew = smooth_elements(unew, to_average);
     
     % Update the heatmap_video with the latest changes
-    update_video_heatmap(heatmap_video, unew, max_temperature);
+    update_video_heatmap(heatmap_video, unew, min_temperature, max_temperature);
     
     % Update the graph_video with the latest changes
-    update_video_graph(graph_video, unew, x, max_temperature);
+    % update_video_graph(graph_video, unew, x, max_temperature);
     
     % Swap pointers
     % Doing it like this rather than having just one array reduces
@@ -95,7 +105,7 @@ end
 close(heatmap_video);
 
 % Close the graph video file
-close(graph_video);
+% close(graph_video);
 
 % Reports how long execution took
 toc
